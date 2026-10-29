@@ -47,6 +47,12 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        "primary-dark": "hsl(var(--primary-dark))",
+        "primary-tint": "hsl(var(--primary-tint))",
+        violet: { DEFAULT: "hsl(var(--violet))", tint: "hsl(var(--violet-tint))" },
+        emerald: { DEFAULT: "hsl(var(--emerald))", tint: "hsl(var(--emerald-tint))" },
+        warning: { DEFAULT: "hsl(var(--warning))", tint: "hsl(var(--warning-tint))" },
+        faint: "hsl(var(--faint))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -59,7 +65,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"DM Sans"', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
       },
       letterSpacing: {
         tightest: '-0.03em',
@@ -77,8 +84,8 @@ export default {
         'overlay-gradient': 'var(--overlay-gradient)',
       },
       boxShadow: {
-        'soft': 'var(--soft-shadow)',
-        'hover': 'var(--hover-shadow)',
+        'soft': 'var(--shadow-soft)',
+        
       },
       transitionDuration: {
         '400': '400ms',
