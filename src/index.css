@@ -37,6 +37,8 @@
     --radius: 0.75rem;
     --gradient-glow: linear-gradient(90deg, hsl(244 49% 35%) 0%, hsl(248 65% 69%) 49%, hsl(169 84% 33%) 100%);
     --shadow-soft: 0 10px 30px -12px hsl(244 49% 35% / 0.18);
+    --hero-shade: linear-gradient(90deg, hsl(235 37% 12% / .96) 0%, hsl(235 37% 12% / .86) 34%, hsl(235 37% 12% / .25) 68%, hsl(235 37% 12% / .04) 100%);
+    --hero-shade-mobile: linear-gradient(0deg, hsl(235 37% 12% / .97) 0%, hsl(235 37% 12% / .78) 58%, hsl(235 37% 12% / .25) 100%);
   }
 }
 
@@ -44,7 +46,29 @@
   * { @apply border-border; }
   html { scroll-behavior: smooth; }
   body { @apply bg-background text-foreground font-sans antialiased; }
-  h1, h2, h3, h4 { @apply font-display font-bold tracking-tight; }
+  h1, h2, h3, h4 { @apply font-display font-bold; letter-spacing: 0; }
+}
+
+.hero-shade { background: var(--hero-shade); }
+.container { min-width: 0; }
+main .grid > * { min-width: 0; }
+main a.inline-flex, main button.inline-flex { max-width: 100%; height: auto; min-height: 2.75rem; white-space: normal; }
+.support-chat { width: min(420px, calc(100vw - 32px)); height: min(670px, calc(100dvh - 112px)); bottom: 88px; right: 20px; }
+.support-chat .sm\:grid-cols-2 { grid-template-columns: minmax(0, 1fr); }
+.support-chat .sm\:col-span-2 { grid-column: auto; }
+.support-chat .sm\:p-7 { padding: 1rem; }
+.support-chat .sm\:flex-row { flex-direction: column; }
+.support-chat h3 { font-size: 1.125rem; }
+.motion-reveal { animation: reveal 700ms ease-out both; }
+@keyframes reveal { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 639px) {
+  .hero-photo { object-position: 65% center; }
+  .hero-shade { background: var(--hero-shade-mobile); }
+  .support-chat { right: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
 }
 
 @layer utilities {

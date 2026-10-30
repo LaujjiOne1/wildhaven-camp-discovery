@@ -5,6 +5,13 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Logo, CapIcon } from "@/components/site/Logo";
 import { GuidedAssistant } from "@/components/site/GuidedAssistant";
 import { edulocConfig, hasApk, hasDirectChannel, hasEmail, hasPhone, hasWhatsapp, mailLink, telLink, whatsappLink } from "@/config/eduloc";
+import { SupportChat } from "@/components/site/SupportChat";
+import { MotionThreads } from "@/components/site/MotionThreads";
+import heroImage from "@/assets/tutoring-hero.jpg";
+import schoolImage from "@/assets/school-support.jpg";
+import adultImage from "@/assets/adult-learning.jpg";
+
+const openHelp = () => window.dispatchEvent(new Event("eduloc:help"));
 
 const NAV = [
   { href: "#fonctionnement", label: "Comment ça marche" },
@@ -23,7 +30,7 @@ const Header = () => {
           {NAV.map((n) => <a key={n.href} href={n.href} className="text-sm font-medium text-muted-foreground transition hover:text-foreground">{n.label}</a>)}
         </nav>
         <div className="flex items-center gap-2">
-          <Button asChild className="hidden rounded-full sm:inline-flex"><a href="#aide">Demander de l'aide</a></Button>
+          <Button onClick={openHelp} className="hidden rounded-full sm:inline-flex"><MessageCircle />Demander de l'aide</Button>
           <button className="rounded-lg p-2 md:hidden" onClick={() => setOpen(!open)} aria-label="Menu">{open ? <X /> : <Menu />}</button>
         </div>
       </div>
@@ -31,7 +38,7 @@ const Header = () => {
         <nav className="border-t bg-background md:hidden">
           <div className="container flex flex-col py-3">
             {NAV.map((n) => <a key={n.href} href={n.href} onClick={() => setOpen(false)} className="py-2.5 font-medium">{n.label}</a>)}
-            <Button asChild className="mt-2 rounded-full"><a href="#aide" onClick={() => setOpen(false)}>Demander de l'aide</a></Button>
+            <Button className="mt-2 rounded-full" onClick={() => { setOpen(false); openHelp(); }}><MessageCircle />Demander de l'aide</Button>
           </div>
         </nav>
       )}
@@ -51,48 +58,31 @@ const DownloadButton = ({ variant = "outline" as "outline" | "default" }) =>
   );
 
 const Hero = () => (
-  <section id="top" className="relative overflow-hidden">
-    <div className="pointer-events-none absolute -right-40 -top-40 h-[520px] w-[520px] rounded-full bg-violet/20 blur-3xl" />
-    <div className="pointer-events-none absolute -left-32 bottom-0 h-72 w-72 rounded-full bg-emerald/10 blur-3xl" />
-    <div className="container relative grid items-center gap-12 py-16 md:py-24 lg:grid-cols-[1.1fr_1fr]">
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700">
-        <span className="inline-flex items-center gap-2 rounded-full bg-emerald-tint px-3 py-1 text-xs font-semibold text-emerald"><BadgeCheck className="h-3.5 w-3.5" />Soutien scolaire avec ou sans accompagnement</span>
-        <h1 className="mt-5 text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
-          Le bon accompagnement,<br /><span className="text-glow">au bon endroit.</span>
-        </h1>
-        <p className="mt-5 max-w-xl text-lg text-muted-foreground">
+  <section id="top" className="relative isolate overflow-hidden bg-primary-dark text-primary-foreground">
+    <img src={heroImage} width={1536} height={1024} fetchPriority="high" alt="Une tutrice accompagne un élève dans ses exercices de mathématiques" className="hero-photo absolute inset-0 -z-20 h-full w-full object-cover object-right" />
+    <div className="hero-shade absolute inset-0 -z-10" />
+    <div className="container relative py-14 md:py-20">
+      <div className="max-w-xl motion-reveal">
+        <span className="inline-flex items-center gap-2 text-sm font-medium"><BookOpen className="h-4 w-4" />Soutien scolaire · Cours particuliers</span>
+        <h1 className="mt-5 text-5xl leading-[1.05] sm:text-6xl lg:text-7xl">edUloc</h1>
+        <p className="mt-4 font-display text-3xl font-bold leading-tight sm:text-4xl">
+          Le bon accompagnement,<br />au bon endroit.
+        </p>
+        <p className="mt-5 max-w-md text-base leading-relaxed text-primary-foreground/85">
           Décrivez votre besoin, un conseiller edUloc trouve le tuteur qui correspond à votre enfant, à vous ou à un proche. Sans compte, sans installation.
         </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button asChild size="lg" className="rounded-full"><a href="#aide">Trouver un tuteur avec un conseiller<ArrowRight className="ml-2 h-4 w-4" /></a></Button>
-          <Button asChild size="lg" variant="outline" className="rounded-full"><a href="#application">Je préfère l'application</a></Button>
+        <div className="mt-8 flex flex-col items-start gap-3">
+          <Button size="lg" onClick={openHelp} className="h-auto max-w-full whitespace-normal rounded-full bg-emerald py-3 text-left hover:bg-emerald/90"><MessageCircle />Trouver un tuteur avec un conseiller<ArrowRight className="h-4 w-4 shrink-0" /></Button>
+          <a href="#application" className="inline-flex items-center gap-2 py-2 text-sm font-medium underline underline-offset-4">Je préfère l'application<ArrowRight className="h-4 w-4" /></a>
         </div>
-        <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground">
+        <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm text-primary-foreground/85">
           <li className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-emerald" />Tuteurs vérifiés</li>
           <li className="flex items-center gap-1.5"><HeartHandshake className="h-4 w-4 text-emerald" />Un conseiller dédié</li>
           <li className="flex items-center gap-1.5"><BookOpen className="h-4 w-4 text-emerald" />Du primaire au supérieur</li>
         </ul>
       </div>
-      <div className="relative animate-in fade-in zoom-in-95 duration-700">
-        <div className="rounded-3xl border bg-card p-6 shadow-soft">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Exemple de demande</p>
-          <div className="mt-4 space-y-3">
-            <Bubble side="left">Bonjour, je cherche un professeur de maths pour mon fils en 4e, deux fois par semaine.</Bubble>
-            <Bubble side="right">Parfait ! Je recherche les tuteurs disponibles près de chez vous et je reviens vers vous avec une proposition.</Bubble>
-          </div>
-          <div className="mt-5 flex items-center gap-3 rounded-2xl bg-primary-tint p-4">
-            <span className="grid h-11 w-11 place-items-center rounded-full bg-primary text-primary-foreground"><GraduationCap className="h-5 w-5" /></span>
-            <div className="flex-1"><p className="font-semibold">Tuteur proposé</p><p className="text-sm text-muted-foreground">Mathématiques · Collège · À domicile</p></div>
-            <BadgeCheck className="h-5 w-5 text-emerald" />
-          </div>
-        </div>
-      </div>
     </div>
   </section>
-);
-
-const Bubble = ({ side, children }: { side: "left" | "right"; children: React.ReactNode }) => (
-  <div className={side === "left" ? "mr-10 rounded-2xl rounded-tl-sm bg-muted p-3 text-sm" : "ml-10 rounded-2xl rounded-tr-sm bg-primary p-3 text-sm text-primary-foreground"}>{children}</div>
 );
 
 const Section = ({ id, eyebrow, title, intro, children, className = "" }: { id: string; eyebrow: string; title: string; intro?: string; children: React.ReactNode; className?: string }) => (
@@ -138,20 +128,23 @@ const PathCard = ({ tone, icon: Icon, badge, title, steps, cta }: { tone: "prima
 );
 
 const SERVICES = [
-  { icon: BookOpen, title: "Soutien scolaire", text: "Cours réguliers pour consolider les bases et reprendre confiance." },
-  { icon: Search, title: "Aide aux devoirs", text: "Un accompagnement au quotidien pour gagner en méthode et en autonomie." },
-  { icon: GraduationCap, title: "Préparation aux examens", text: "Brevet, bac, concours : des révisions ciblées avant les échéances." },
-  { icon: Users, title: "Cours pour adultes", text: "Langues, remise à niveau ou reconversion, à votre rythme." },
+  { icon: BookOpen, image: schoolImage, title: "Soutien scolaire", text: "Cours réguliers pour consolider les bases et reprendre confiance." },
+  { icon: Search, image: heroImage, title: "Aide aux devoirs", text: "Un accompagnement au quotidien pour gagner en méthode et en autonomie." },
+  { icon: GraduationCap, image: schoolImage, title: "Préparation aux examens", text: "Brevet, bac, concours : des révisions ciblées avant les échéances." },
+  { icon: Users, image: adultImage, title: "Cours pour adultes", text: "Langues, remise à niveau ou reconversion, à votre rythme." },
 ];
 
 const Services = () => (
   <Section id="services" eyebrow="Services" title="Un accompagnement pour chaque besoin" className="bg-card">
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       {SERVICES.map((s) => (
-        <div key={s.title} className="rounded-2xl border bg-background p-6 transition hover:-translate-y-1 hover:shadow-soft">
+        <div key={s.title} className="group overflow-hidden rounded-lg border bg-background transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+          <img src={s.image} alt={s.title} width={1024} height={768} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-105" />
+          <div className="p-5">
           <s.icon className="h-7 w-7 text-primary" />
           <h3 className="mt-4 text-lg">{s.title}</h3>
           <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>
+          </div>
         </div>
       ))}
     </div>
@@ -198,7 +191,7 @@ const AppSection = () => (
   <section id="application" className="scroll-mt-16 py-20">
     <div className="container">
       <div className="relative overflow-hidden rounded-3xl bg-primary-dark p-8 text-primary-foreground sm:p-14">
-        <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-violet/40 blur-3xl" />
+        <MotionThreads />
         <div className="relative max-w-xl">
           <p className="text-sm font-semibold uppercase tracking-wider text-violet">Application Android</p>
           <h2 className="mt-2 text-3xl sm:text-4xl">Gérez vos cours en toute autonomie</h2>
@@ -243,6 +236,7 @@ const Index = () => (
     <Header />
     <main><Hero /><HowItWorks /><Help /><Services /><AppSection /><Faq /></main>
     <Footer />
+    <SupportChat />
   </div>
 );
 
