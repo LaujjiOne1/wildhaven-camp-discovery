@@ -50,6 +50,9 @@
 }
 
 .hero-shade { background: var(--hero-shade); }
+.container { min-width: 0; }
+main .grid > * { min-width: 0; }
+main a.inline-flex, main button.inline-flex { max-width: 100%; height: auto; min-height: 2.75rem; white-space: normal; }
 .support-chat { width: min(420px, calc(100vw - 32px)); height: min(670px, calc(100dvh - 112px)); bottom: 88px; right: 20px; }
 .support-chat .sm\:grid-cols-2 { grid-template-columns: minmax(0, 1fr); }
 .support-chat .sm\:col-span-2 { grid-column: auto; }

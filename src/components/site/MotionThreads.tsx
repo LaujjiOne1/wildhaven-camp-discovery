@@ -13,6 +13,7 @@ export const MotionThreads = () => {
     let pointer = 0;
     const colors = ["--violet", "--emerald", "--primary"];
     const draw = () => {
+      cancelAnimationFrame(frame);
       const { width, height } = canvas.getBoundingClientRect();
       const ratio = window.devicePixelRatio || 1;
       if (canvas.width !== Math.round(width * ratio) || canvas.height !== Math.round(height * ratio)) {

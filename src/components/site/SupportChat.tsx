@@ -4,7 +4,7 @@ import { ArrowLeft, ArrowRight, Headphones, MessageCircle, Send, X } from "lucid
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { GuidedAssistant } from "./GuidedAssistant";
-import { hasPhone, hasWhatsapp, telLink, whatsappLink } from "@/config/eduloc";
+import { edulocConfig, hasApk, hasPhone, hasWhatsapp, telLink, whatsappLink } from "@/config/eduloc";
 
 const TOPICS = [
   { label: "Trouver un tuteur", text: "Pour vous, votre enfant ou un proche, précisez la matière, le niveau et le format souhaité. Vous pouvez enregistrer votre besoin pour être recontacté par un conseiller." },
@@ -32,7 +32,8 @@ export const SupportChat = () => {
   const answer = (text: string) => {
     const normalized = text.toLocaleLowerCase("fr");
     const topic = TOPICS.find((t) => t.label === text) ?? (/réserv|reserv|annul|paiement|cours/.test(normalized) ? TOPICS[1] : /android|application|apk|télécharg/.test(normalized) ? TOPICS[2] : /tuteur|prof|math|enfant|soutien/.test(normalized) ? TOPICS[0] : undefined);
-    setMessages((old) => [...old, { role: "user", text }, { role: "assistant", text: topic?.text ?? "Je suis l’assistant guidé edUloc, pas un conseiller en direct. Pour une réponse personnalisée, laissez une demande au service client avec vos coordonnées." }]);
+    const reply = topic === TOPICS[2] && hasApk() ? "L’application Android permet de rechercher un tuteur et de gérer vos cours. Retrouvez le téléchargement dans la section Application du site." : topic?.text;
+    setMessages((old) => [...old, { role: "user", text }, { role: "assistant", text: reply ?? "Je suis l’assistant guidé edUloc, pas un conseiller en direct. Pour une réponse personnalisée, laissez une demande au service client avec vos coordonnées." }]);
     setInput("");
   };
   return <>
@@ -57,6 +58,7 @@ export const SupportChat = () => {
               <p className="mt-2 text-center text-xs text-muted-foreground">Laissez une demande pour être recontacté.</p>
               {hasWhatsapp() && <Button asChild variant="outline" className="mt-2 w-full"><a href={whatsappLink()} target="_blank" rel="noreferrer">WhatsApp</a></Button>}
               {hasPhone() && <Button asChild variant="outline" className="mt-2 w-full"><a href={telLink()}>Appeler</a></Button>}
+              {hasApk() && <Button asChild variant="outline" className="mt-2 w-full"><a href={edulocConfig.apkDownloadUrl} download>Télécharger l’application</a></Button>}
             </div>
           </div>
           <form className="flex shrink-0 gap-2 border-t bg-card p-3" onSubmit={(e) => { e.preventDefault(); if (input.trim()) answer(input.trim()); }}>
