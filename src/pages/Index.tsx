@@ -10,6 +10,7 @@ import { MotionThreads } from "@/components/site/MotionThreads";
 import heroImage from "@/assets/tutoring-hero.jpg";
 import schoolImage from "@/assets/school-support.jpg";
 import adultImage from "@/assets/adult-learning.jpg";
+import { ScrollReveal } from "@/components/site/ScrollReveal";
 
 const openHelp = () => window.dispatchEvent(new Event("eduloc:help"));
 
@@ -64,7 +65,7 @@ const Hero = () => (
     <div className="container relative py-14 md:py-20">
       <div className="max-w-xl motion-reveal">
         <span className="inline-flex items-center gap-2 text-sm font-medium"><BookOpen className="h-4 w-4" />Soutien scolaire · Cours particuliers</span>
-        <h1 className="mt-5 text-5xl leading-[1.05] sm:text-6xl lg:text-7xl">edUloc</h1>
+        <h1 className="mt-5 text-5xl leading-[1.05] sm:text-6xl lg:text-7xl"><span>edU</span><span className="text-violet">loc</span></h1>
         <p className="mt-4 font-display text-3xl font-bold leading-tight sm:text-4xl">
           Le bon accompagnement,<br />au bon endroit.
         </p>
@@ -88,11 +89,11 @@ const Hero = () => (
 const Section = ({ id, eyebrow, title, intro, children, className = "" }: { id: string; eyebrow: string; title: string; intro?: string; children: React.ReactNode; className?: string }) => (
   <section id={id} className={`scroll-mt-16 py-20 ${className}`}>
     <div className="container">
-      <div className="mx-auto mb-12 max-w-2xl text-center">
+      <ScrollReveal className="mx-auto mb-12 max-w-2xl text-center">
         <p className="text-sm font-semibold uppercase tracking-wider text-primary">{eyebrow}</p>
         <h2 className="mt-2 text-3xl sm:text-4xl">{title}</h2>
         {intro && <p className="mt-4 text-muted-foreground">{intro}</p>}
-      </div>
+      </ScrollReveal>
       {children}
     </div>
   </section>
@@ -104,15 +105,15 @@ const HowItWorks = () => (
       <PathCard tone="primary" icon={HeartHandshake} badge="Le plus simple" title="Avec un conseiller"
         steps={["Décrivez votre besoin en quelques clics ou par message", "Un conseiller recherche les tuteurs disponibles pour vous", "Il vous propose un professeur et organise le premier cours"]}
         cta={<Button asChild className="rounded-full"><a href="#aide">Décrire mon besoin<ArrowRight className="ml-2 h-4 w-4" /></a></Button>} />
-      <PathCard tone="violet" icon={Smartphone} badge="En autonomie" title="Avec l'application"
+      <PathCard delay={0.12} tone="violet" icon={Smartphone} badge="En autonomie" title="Avec l'application"
         steps={["Téléchargez edUloc sur votre téléphone Android", "Recherchez un tuteur selon la matière et le niveau", "Réservez et suivez vos cours depuis l'application"]}
         cta={<DownloadButton />} />
     </div>
   </Section>
 );
 
-const PathCard = ({ tone, icon: Icon, badge, title, steps, cta }: { tone: "primary" | "violet"; icon: typeof Users; badge: string; title: string; steps: string[]; cta: React.ReactNode }) => (
-  <div className={`flex flex-col rounded-2xl border p-7 ${tone === "primary" ? "bg-card" : "bg-violet-tint"}`}>
+const PathCard = ({ tone, icon: Icon, badge, title, steps, cta, delay = 0 }: { tone: "primary" | "violet"; icon: typeof Users; badge: string; title: string; steps: string[]; cta: React.ReactNode; delay?: number }) => (
+  <ScrollReveal delay={delay} className={`flex flex-col rounded-2xl border p-7 ${tone === "primary" ? "bg-card" : "bg-violet-tint"}`}>
     <div className="flex items-center justify-between">
       <span className="grid h-12 w-12 place-items-center rounded-xl bg-primary-tint text-primary"><Icon className="h-6 w-6" /></span>
       <span className="rounded-full bg-card px-3 py-1 text-xs font-semibold text-primary">{badge}</span>
@@ -124,7 +125,7 @@ const PathCard = ({ tone, icon: Icon, badge, title, steps, cta }: { tone: "prima
       ))}
     </ol>
     <div className="mt-7">{cta}</div>
-  </div>
+  </ScrollReveal>
 );
 
 const SERVICES = [
@@ -137,15 +138,15 @@ const SERVICES = [
 const Services = () => (
   <Section id="services" eyebrow="Services" title="Un accompagnement pour chaque besoin" className="bg-card">
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {SERVICES.map((s) => (
-        <div key={s.title} className="group overflow-hidden rounded-lg border bg-background transition duration-300 hover:-translate-y-1 hover:shadow-soft">
+      {SERVICES.map((s, index) => (
+        <ScrollReveal key={s.title} delay={index * 0.09} className="group overflow-hidden rounded-lg border bg-background transition-shadow duration-300 hover:shadow-soft">
           <img src={s.image} alt={s.title} width={1024} height={768} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-700 motion-safe:group-hover:scale-105" />
           <div className="p-5">
           <s.icon className="h-7 w-7 text-primary" />
           <h3 className="mt-4 text-lg">{s.title}</h3>
           <p className="mt-2 text-sm text-muted-foreground">{s.text}</p>
           </div>
-        </div>
+        </ScrollReveal>
       ))}
     </div>
     <p className="mt-8 text-center text-sm text-muted-foreground">À domicile ou en ligne · Du primaire au supérieur</p>
@@ -154,7 +155,7 @@ const Services = () => (
 
 const Help = () => (
   <Section id="aide" eyebrow="Assistance" title="Parlez-nous de votre besoin" intro="Pas besoin d'installer l'application ni de créer un compte. Répondez à quelques questions, on s'occupe du reste.">
-    <div className="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
+    <ScrollReveal className="grid gap-8 lg:grid-cols-[1.6fr_1fr]">
       <GuidedAssistant />
       <aside className="space-y-4">
         <div className="rounded-2xl border bg-card p-6">
@@ -176,7 +177,7 @@ const Help = () => (
           <p className="mt-2 text-sm opacity-85">Un conseiller étudie votre demande, recherche les tuteurs adaptés et leurs disponibilités, puis vous fait une proposition.</p>
         </div>
       </aside>
-    </div>
+    </ScrollReveal>
   </Section>
 );
 
@@ -190,7 +191,7 @@ const Channel = ({ href, icon: Icon, label, sub, external }: { href: string; ico
 const AppSection = () => (
   <section id="application" className="scroll-mt-16 py-20">
     <div className="container">
-      <div className="relative overflow-hidden rounded-3xl bg-primary-dark p-8 text-primary-foreground sm:p-14">
+      <ScrollReveal className="relative overflow-hidden rounded-3xl bg-primary-dark p-8 text-primary-foreground sm:p-14">
         <MotionThreads />
         <div className="relative max-w-xl">
           <p className="text-sm font-semibold uppercase tracking-wider text-violet">Application Android</p>
@@ -199,7 +200,7 @@ const AppSection = () => (
           <div className="mt-8"><DownloadButton variant="default" /></div>
           {hasApk() && <p className="mt-3 text-xs opacity-70">Fichier APK pour Android. Autorisez l'installation depuis votre navigateur si demandé.</p>}
         </div>
-      </div>
+      </ScrollReveal>
     </div>
   </section>
 );
@@ -213,11 +214,11 @@ const FAQS = [
 
 const Faq = () => (
   <Section id="faq" eyebrow="FAQ" title="Questions fréquentes" className="bg-card">
-    <Accordion type="single" collapsible className="mx-auto max-w-2xl">
+    <ScrollReveal className="mx-auto max-w-2xl"><Accordion type="single" collapsible>
       {FAQS.map((f) => (
         <AccordionItem key={f.q} value={f.q}><AccordionTrigger className="text-left font-semibold">{f.q}</AccordionTrigger><AccordionContent className="text-muted-foreground">{f.a}</AccordionContent></AccordionItem>
       ))}
-    </Accordion>
+    </Accordion></ScrollReveal>
   </Section>
 );
 
