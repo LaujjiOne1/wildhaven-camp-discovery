@@ -6,11 +6,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
+import { PrefsProvider } from "./components/site/prefs";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <PrefsProvider>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -23,6 +25,7 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+    </PrefsProvider>
   </QueryClientProvider>
 );
 

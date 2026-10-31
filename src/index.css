@@ -40,11 +40,37 @@
     --hero-shade: linear-gradient(90deg, hsl(235 37% 12% / .96) 0%, hsl(235 37% 12% / .86) 34%, hsl(235 37% 12% / .25) 68%, hsl(235 37% 12% / .04) 100%);
     --hero-shade-mobile: linear-gradient(0deg, hsl(235 37% 12% / .97) 0%, hsl(235 37% 12% / .78) 58%, hsl(235 37% 12% / .25) 100%);
   }
+  .dark {
+    --background: 235 32% 8%;
+    --foreground: 50 38% 96%;
+    --card: 235 30% 12%;
+    --card-foreground: 50 38% 96%;
+    --popover: 235 30% 12%;
+    --popover-foreground: 50 38% 96%;
+    --primary: 248 65% 69%;
+    --primary-dark: 244 54% 16%;
+    --primary-foreground: 235 37% 10%;
+    --primary-tint: 244 35% 20%;
+    --violet-tint: 248 30% 16%;
+    --secondary: 248 30% 16%;
+    --secondary-foreground: 248 65% 80%;
+    --muted: 235 22% 18%;
+    --muted-foreground: 235 15% 70%;
+    --faint: 235 12% 45%;
+    --accent: 244 35% 20%;
+    --accent-foreground: 248 65% 85%;
+    --emerald-tint: 169 50% 15%;
+    --border: 235 22% 22%;
+    --input: 235 22% 22%;
+    --ring: 248 65% 69%;
+  }
+  .dark .bg-primary-dark, .dark .bg-foreground { color: hsl(50 38% 96%); }
 }
 
 @layer base {
   * { @apply border-border; }
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; scroll-snap-type: y proximity; scroll-padding-top: 4rem; }
+  main > section, footer { scroll-snap-align: start; }
   body { @apply bg-background text-foreground font-sans antialiased; }
   h1, h2, h3, h4 { @apply font-display font-bold; letter-spacing: 0; }
 }
