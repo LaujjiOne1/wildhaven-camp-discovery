@@ -5,3 +5,6 @@
 - Floating customer support uses local guided answers and embeds the existing request assistant; it never claims a live human connection. Why: no agent messaging service is connected.
 - MotionThreads is a lightweight canvas interpretation of the uploaded reference, with reduced-motion support. Why: the upload contains usage props, not the WebThreads implementation.
 - Use ScrollReveal for one-time viewport-triggered section and item entrances, respecting reduced-motion preferences. Why: scroll animation stays consistent without hiding content from motion-sensitive users.
+- Site authentication uses Cloud Auth and owner-only profiles, separate from Android lesson management. Why: website profiles must not become a second booking system.
+- PrefsProvider owns persistent language/theme preferences, and support translations retain canonical submitted values. Why: switching language must not change stored request semantics.
+- ServicesCarousel provides accessible animated service navigation with reduced-motion support. Why: the uploaded video is a visual reference, not content to embed.

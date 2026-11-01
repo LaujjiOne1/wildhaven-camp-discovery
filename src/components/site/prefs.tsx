@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 
 type Lang = "fr" | "en";
 type Theme = "light" | "dark";
-const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void; theme: Theme; setTheme: (t: Theme) => void }>(null!);
+const Ctx = createContext<{ lang: Lang; setLang: (l: Lang) => void; theme: Theme; setTheme: (t: Theme) => void } | undefined>(undefined);
 
 export const PrefsProvider = ({ children }: { children: ReactNode }) => {
   const [lang, setLang] = useState<Lang>(() => (localStorage.getItem("eduloc-lang") as Lang) || "fr");
@@ -12,6 +12,10 @@ export const PrefsProvider = ({ children }: { children: ReactNode }) => {
   return <Ctx.Provider value={{ lang, setLang, theme, setTheme }}>{children}</Ctx.Provider>;
 };
 
-export const usePrefs = () => useContext(Ctx);
+export const usePrefs = () => {
+  const prefs = useContext(Ctx);
+  if (!prefs) throw new Error("PrefsProvider is required");
+  return prefs;
+};
 /** t("texte FR", "EN text") */
 export const useT = () => { const { lang } = usePrefs(); return (fr: string, en: string) => (lang === "fr" ? fr : en); };

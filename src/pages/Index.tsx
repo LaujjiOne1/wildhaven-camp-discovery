@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ArrowRight, BookOpen, Clock, Download, GraduationCap, HeartHandshake, LogIn, Mail, Menu, MessageCircle, Moon, Phone, Search, ShieldCheck, Smartphone, Sun, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { AccountButton } from "@/components/site/AccountButton";
 import { Logo, CapIcon } from "@/components/site/Logo";
 import { GuidedAssistant } from "@/components/site/GuidedAssistant";
 import { edulocConfig, hasApk, hasDirectChannel, hasEmail, hasPhone, hasWhatsapp, mailLink, telLink, whatsappLink } from "@/config/eduloc";
@@ -29,31 +29,12 @@ const useNav = () => {
   ];
 };
 
-const LoginButton = () => {
-  const t = useT();
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="rounded-full"><LogIn />{t("Se connecter", "Sign in")}</Button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-72">
-        <p className="font-display font-bold">{t("Votre compte edUloc", "Your edUloc account")}</p>
-        <p className="mt-2 text-sm text-muted-foreground">{t("La connexion à votre compte (cours, réservations) se fait dans l'application Android. Sur ce site, aucun compte n'est nécessaire pour demander de l'aide.", "Signing in to your account (lessons, bookings) happens in the Android app. No account is needed on this site to ask for help.")}</p>
-        <div className="mt-4 flex flex-col gap-2">
-          <DownloadButton size="sm" />
-          <Button size="sm" variant="ghost" onClick={openHelp}><MessageCircle />{t("Demander de l'aide", "Ask for help")}</Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
-};
-
 const Toggles = () => {
   const { lang, setLang, theme, setTheme } = usePrefs();
   return (
     <>
-      <button onClick={() => setLang(lang === "fr" ? "en" : "fr")} aria-label={lang === "fr" ? "Switch to English" : "Passer en français"} className="h-9 rounded-full border px-3 text-xs font-bold hover:bg-primary-tint">{lang === "fr" ? "EN" : "FR"}</button>
-      <button onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={theme === "dark" ? "Thème clair" : "Thème sombre"} className="grid h-9 w-9 place-items-center rounded-full border hover:bg-primary-tint">{theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}</button>
+      <Button variant="outline" size="sm" onClick={() => setLang(lang === "fr" ? "en" : "fr")} aria-label={lang === "fr" ? "Switch to English" : "Passer en français"} className="h-9 rounded-full px-3 text-xs font-bold">{lang === "fr" ? "EN" : "FR"}</Button>
+      <Button variant="outline" size="icon" onClick={() => setTheme(theme === "dark" ? "light" : "dark")} aria-label={theme === "dark" ? "Thème clair" : "Thème sombre"} title={theme === "dark" ? "Thème clair" : "Thème sombre"} className="h-9 w-9 rounded-full">{theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}</Button>
     </>
   );
 };
@@ -66,20 +47,19 @@ const Header = () => {
     <header className="sticky top-0 z-50 border-b bg-background/85 backdrop-blur">
       <div className="container flex h-16 items-center justify-between gap-3">
         <a href="#top" aria-label="edUloc"><Logo /></a>
-        <nav className="hidden items-center gap-6 lg:flex">
+        <nav className="hidden items-center gap-5 xl:flex">
           {nav.map((n) => <a key={n.href} href={n.href} className="text-sm font-medium text-muted-foreground transition hover:text-foreground">{n.label}</a>)}
         </nav>
         <div className="flex items-center gap-2">
           <Toggles />
-          <div className="hidden sm:block"><LoginButton /></div>
-          <button className="rounded-lg p-2 lg:hidden" onClick={() => setOpen(!open)} aria-label="Menu">{open ? <X /> : <Menu />}</button>
+          <AccountButton />
+          <Button variant="ghost" size="icon" className="xl:hidden" onClick={() => setOpen(!open)} aria-label="Menu" aria-expanded={open}>{open ? <X /> : <Menu />}</Button>
         </div>
       </div>
       {open && (
-        <nav className="border-t bg-background lg:hidden">
+        <nav className="border-t bg-background xl:hidden">
           <div className="container flex flex-col py-3">
             {nav.map((n) => <a key={n.href} href={n.href} onClick={() => setOpen(false)} className="py-2.5 font-medium">{n.label}</a>)}
-            <div className="mt-2 flex flex-wrap gap-2 sm:hidden"><LoginButton /></div>
             <Button className="mt-2 rounded-full" onClick={() => { setOpen(false); openHelp(); }}><MessageCircle />{t("Demander de l'aide", "Ask for help")}</Button>
           </div>
         </nav>
@@ -118,7 +98,7 @@ const Hero = () => {
             {t("Décrivez votre besoin, un conseiller edUloc trouve le tuteur qui correspond à votre enfant, à vous ou à un proche. Sans compte, sans installation.", "Describe your need and an edUloc advisor finds the right tutor for your child, yourself or a loved one. No account, no install.")}
           </p>
           <div className="mt-8 flex flex-col items-start gap-3">
-            <Button size="lg" onClick={openHelp} className="h-auto max-w-full whitespace-normal rounded-full bg-emerald py-3 text-left text-white hover:bg-emerald/90"><MessageCircle />{t("Trouver un tuteur avec un conseiller", "Find a tutor with an advisor")}<ArrowRight className="h-4 w-4 shrink-0" /></Button>
+            <Button size="lg" onClick={openHelp} className="h-auto max-w-full whitespace-normal rounded-full bg-emerald py-3 text-left text-destructive-foreground hover:bg-emerald/90"><MessageCircle />{t("Trouver un tuteur avec un conseiller", "Find a tutor with an advisor")}<ArrowRight className="h-4 w-4 shrink-0" /></Button>
             <a href="#application" className="inline-flex items-center gap-2 py-2 text-sm font-medium underline underline-offset-4">{t("Je préfère l'application", "I prefer the app")}<ArrowRight className="h-4 w-4" /></a>
           </div>
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm opacity-85">
