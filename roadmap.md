@@ -5,6 +5,7 @@
 - [x] Vérifier le tchat et les affichages ordinateur et téléphone.
 - [x] Remettre le nom d’accueil aux couleurs de la charte.
 - [x] Ajouter les animations au défilement avec réduction des mouvements.
-- [ ] Ajouter la connexion et un profil personnel, sans gestion des cours.
-- [ ] Vérifier les langues et les thèmes clair/sombre.
-- [ ] Vérifier les services animés inspirés de la vidéo et les liens de section.
+- [x] Ajouter la connexion et un profil personnel, sans gestion des cours.
+- [x] Vérifier les langues et les thèmes clair/sombre.
+- [x] Vérifier les services animés inspirés de la vidéo et les liens de section.
+- [ ] Vérifier l’enregistrement du profil connecté et la création automatique à l’inscription : attend un premier compte confirmé.
