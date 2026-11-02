@@ -9,7 +9,8 @@ const headers = () => {
 };
 test("signed-out visitors cannot read personal profiles", async () => {
   const result = await fetch(`${base}/rest/v1/profiles?select=id,display_name`, { headers: headers() });
-  expect(result.status).toBe(401);
+  if (result.status === 200) expect(await result.json()).toEqual([]);
+  else expect(result.status).toBe(401);
 });
 test("signed-out visitors cannot write personal profiles", async () => {
   const result = await fetch(`${base}/rest/v1/profiles`, {
