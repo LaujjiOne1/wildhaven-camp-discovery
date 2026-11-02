@@ -8,6 +8,8 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { edulocConfig, hasPhone, hasWhatsapp, telLink, whatsappLink } from "@/config/eduloc";
 import { cn } from "@/lib/utils";
+import { useSupportCopy } from "./supportCopy";
+import { useT } from "./prefs";
 
 type Question = { id: string; label: string; type: "chips" | "text"; options?: string[]; optional?: boolean; placeholder?: string };
 type Category = { id: "trouver_tuteur" | "cours_proche" | "reservation" | "autre"; title: string; desc: string; icon: typeof Users; questions: Question[] };
@@ -62,6 +64,8 @@ const contactSchema = z
 type Step = "category" | "questions" | "contact" | "done";
 
 export const GuidedAssistant = () => {
+  const tr = useSupportCopy();
+  const t = useT();
   const [step, setStep] = useState<Step>("category");
   const [cat, setCat] = useState<Category | null>(null);
   const [qIndex, setQIndex] = useState(0);
@@ -74,9 +78,9 @@ export const GuidedAssistant = () => {
 
   const summary = useMemo(() => {
     if (!cat) return "";
-    const lines = cat.questions.filter((q) => answers[q.id]).map((q) => `${q.label} ${answers[q.id]}`);
-    return [`Demande edUloc : ${cat.title}`, ...lines].join("\n");
-  }, [cat, answers]);
+    const lines = cat.questions.filter((q) => answers[q.id]).map((q) => `${tr(q.label)} ${tr(answers[q.id])}`);
+    return [`${tr("Demande edUloc")} : ${tr(cat.title)}`, ...lines].join("\n");
+  }, [cat, answers, tr]);
 
   const pickCategory = (c: Category) => {
     setCat(c); setAnswers({}); setQIndex(0);
@@ -92,6 +96,7 @@ export const GuidedAssistant = () => {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!cat) return;
     setSendError("");
     const parsed = contactSchema.safeParse(form);
     if (!parsed.success) {
@@ -104,11 +109,11 @@ export const GuidedAssistant = () => {
     const id = crypto.randomUUID();
     const d = parsed.data;
     const { error } = await supabase.from("support_requests").insert({
-      id, category: cat!.id, details: answers, full_name: d.full_name,
+      id, category: cat.id, details: answers, full_name: d.full_name,
       phone: d.phone || null, email: d.email || null, preferred_channel: d.preferred_channel, message: d.message || null,
     });
     setSending(false);
-    if (error) { setSendError("Votre demande n'a pas pu être enregistrée. Réessayez dans un instant" + (hasWhatsapp() || hasPhone() ? " ou contactez-nous directement." : ".")); return; }
+    if (error) { setSendError(tr("Votre demande n'a pas pu être enregistrée. Réessayez dans un instant") + (hasWhatsapp() || hasPhone() ? tr(" ou contactez-nous directement.") : ".")); return; }
     setReference(id.slice(0, 8).toUpperCase());
     setStep("done");
   };
@@ -123,24 +128,24 @@ export const GuidedAssistant = () => {
         <div className="flex items-center gap-3">
           <span className="grid h-9 w-9 place-items-center rounded-full bg-primary text-primary-foreground"><MessageCircle className="h-4 w-4" /></span>
           <div>
-            <p className="font-display font-bold leading-tight">Assistant edUloc</p>
-            <p className="text-xs text-muted-foreground">Quelques questions pour bien vous orienter</p>
+            <p className="font-display font-bold leading-tight">{tr("Assistant edUloc")}</p>
+            <p className="text-xs text-muted-foreground">{tr("Quelques questions pour bien vous orienter")}</p>
           </div>
         </div>
-        {step !== "done" && <span className="text-xs font-medium text-muted-foreground">Étape {current}/{cat ? totalSteps : "…"}</span>}
+        {step !== "done" && <span className="text-xs font-medium text-muted-foreground">{tr("Étape")} {current}/{cat ? totalSteps : "…"}</span>}
       </div>
       {step !== "done" && cat && <div className="h-1 bg-muted"><div className="h-full bg-glow transition-all" style={{ width: `${(current / totalSteps) * 100}%` }} /></div>}
 
       <div className="p-5 sm:p-7">
         {step === "category" && (
           <div>
-            <h3 className="mb-4 text-xl">Comment pouvons-nous vous aider ?</h3>
+            <h3 className="mb-4 text-xl">{tr("Comment pouvons-nous vous aider ?")}</h3>
             <div className="grid gap-3 sm:grid-cols-2">
               {CATEGORIES.map((c) => (
-                <button key={c.id} onClick={() => pickCategory(c)} className="group flex items-start gap-3 rounded-xl border bg-background p-4 text-left transition hover:border-primary hover:bg-primary-tint">
+                <Button variant="outline" key={c.id} onClick={() => pickCategory(c)} className="group flex h-auto items-start justify-start gap-3 rounded-lg bg-background p-4 text-left whitespace-normal">
                   <c.icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-                  <span><span className="block font-semibold">{c.title}</span><span className="text-sm text-muted-foreground">{c.desc}</span></span>
-                </button>
+                  <span><span className="block font-semibold">{tr(c.title)}</span><span className="text-sm text-muted-foreground">{tr(c.desc)}</span></span>
+                </Button>
               ))}
             </div>
           </div>
@@ -148,24 +153,24 @@ export const GuidedAssistant = () => {
 
         {step === "questions" && q && (
           <div key={q.id + qIndex} className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <p className="mb-1 text-sm font-medium text-primary">{cat!.title}</p>
-            <h3 className="mb-5 text-xl">{q.label}</h3>
+            <p className="mb-1 text-sm font-medium text-primary">{tr(cat?.title ?? "")}</p>
+            <h3 className="mb-5 text-xl">{tr(q.label)}</h3>
             {q.type === "chips" ? (
               <div className="flex flex-wrap gap-2">
-                {q.options!.map((o) => (
-                  <button key={o} onClick={() => { setAnswers({ ...answers, [q.id]: o }); setTimeout(nextQ, 150); }}
+                {q.options?.map((o) => (
+                  <Button variant="outline" key={o} onClick={() => { setAnswers({ ...answers, [q.id]: o }); setTimeout(nextQ, 150); }}
                     className={cn("rounded-full border px-4 py-2 text-sm font-medium transition", answers[q.id] === o ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:border-primary hover:bg-primary-tint")}>
-                    {o}
-                  </button>
+                    {tr(o)}
+                  </Button>
                 ))}
               </div>
             ) : (
-              <Input value={answers[q.id] ?? ""} maxLength={120} placeholder={q.placeholder} onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })} onKeyDown={(e) => e.key === "Enter" && nextQ()} />
+              <Input value={answers[q.id] ?? ""} maxLength={120} placeholder={tr(q.placeholder ?? "")} onChange={(e) => setAnswers({ ...answers, [q.id]: e.target.value })} onKeyDown={(e) => e.key === "Enter" && nextQ()} />
             )}
             <div className="mt-6 flex justify-between">
-              <Button variant="ghost" onClick={back}><ArrowLeft className="mr-1 h-4 w-4" />Retour</Button>
+              <Button variant="ghost" onClick={back}><ArrowLeft className="mr-1 h-4 w-4" />{tr("Retour")}</Button>
               {(q.type === "text" || answers[q.id]) && (
-                <Button onClick={nextQ} disabled={!q.optional && !answers[q.id]}>{q.optional && !answers[q.id] ? "Passer" : "Continuer"}<ArrowRight className="ml-1 h-4 w-4" /></Button>
+                <Button onClick={nextQ} disabled={!q.optional && !answers[q.id]}>{tr(q.optional && !answers[q.id] ? "Passer" : "Continuer")}<ArrowRight className="ml-1 h-4 w-4" /></Button>
               )}
             </div>
           </div>
@@ -175,24 +180,24 @@ export const GuidedAssistant = () => {
           <form onSubmit={submit} className="animate-in fade-in duration-300" noValidate>
             {cat.questions.length > 0 && (
               <div className="mb-5 rounded-xl bg-primary-tint p-4 text-sm">
-                <p className="mb-2 font-semibold text-primary">Votre besoin</p>
+                <p className="mb-2 font-semibold text-primary">{tr("Votre besoin")}</p>
                 <ul className="flex flex-wrap gap-1.5">
-                  {Object.values(answers).filter(Boolean).map((v, i) => <li key={i} className="rounded-full bg-card px-2.5 py-0.5">{v}</li>)}
+                  {Object.values(answers).filter(Boolean).map((v, i) => <li key={i} className="rounded-full bg-card px-2.5 py-0.5">{tr(v)}</li>)}
                 </ul>
               </div>
             )}
 
-            <h3 className="mb-1 text-xl">Meilleure prochaine étape</h3>
+            <h3 className="mb-1 text-xl">{tr("Meilleure prochaine étape")}</h3>
             {hasWhatsapp() ? (
               <div className="mb-5 mt-3 flex flex-col gap-2 sm:flex-row">
-                <Button asChild className="bg-emerald hover:bg-emerald/90"><a href={whatsappLink(summary)} target="_blank" rel="noreferrer"><MessageCircle className="mr-2 h-4 w-4" />Envoyer sur WhatsApp</a></Button>
-                {hasPhone() && <Button asChild variant="outline"><a href={telLink()}><Phone className="mr-2 h-4 w-4" />Appeler un conseiller</a></Button>}
+                <Button asChild className="bg-emerald hover:bg-emerald/90"><a href={whatsappLink(summary)} target="_blank" rel="noreferrer"><MessageCircle className="mr-2 h-4 w-4" />{tr("Envoyer sur WhatsApp")}</a></Button>
+                {hasPhone() && <Button asChild variant="outline"><a href={telLink()}><Phone className="mr-2 h-4 w-4" />{tr("Appeler un conseiller")}</a></Button>}
               </div>
             ) : hasPhone() ? (
-              <Button asChild variant="outline" className="mb-5 mt-3"><a href={telLink()}><Phone className="mr-2 h-4 w-4" />Appeler un conseiller</a></Button>
+              <Button asChild variant="outline" className="mb-5 mt-3"><a href={telLink()}><Phone className="mr-2 h-4 w-4" />{tr("Appeler un conseiller")}</a></Button>
             ) : null}
             <p className="mb-4 text-sm text-muted-foreground">
-              {hasWhatsapp() || hasPhone() ? "Ou laissez vos coordonnées : un conseiller vous recontacte." : "Laissez vos coordonnées : un conseiller edUloc vous recontacte pour vous proposer un tuteur."}
+              {tr(hasWhatsapp() || hasPhone() ? "Ou laissez vos coordonnées : un conseiller vous recontacte." : "Laissez vos coordonnées : un conseiller edUloc vous recontacte pour vous proposer un tuteur.")}
             </p>
 
             <div className="grid gap-4 sm:grid-cols-2">
@@ -208,19 +213,19 @@ export const GuidedAssistant = () => {
               <Field label="Être recontacté par" className="sm:col-span-2">
                 <div className="flex flex-wrap gap-2">
                   {["Téléphone", "WhatsApp", "E-mail"].map((c) => (
-                    <button type="button" key={c} onClick={() => setForm({ ...form, preferred_channel: c })}
-                      className={cn("rounded-full border px-3.5 py-1.5 text-sm transition", form.preferred_channel === c ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-primary-tint")}>{c}</button>
+                    <Button variant="outline" type="button" key={c} onClick={() => setForm({ ...form, preferred_channel: c })}
+                      className={cn("rounded-full border px-3.5 py-1.5 text-sm transition", form.preferred_channel === c ? "border-primary bg-primary text-primary-foreground" : "bg-background hover:bg-primary-tint")}>{tr(c)}</Button>
                   ))}
                 </div>
               </Field>
               <Field label={cat.id === "autre" ? "Votre message" : "Précisions (facultatif)"} className="sm:col-span-2">
-                <Textarea rows={3} maxLength={2000} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="Disponibilités, objectifs, difficultés…" />
+                <Textarea rows={3} maxLength={2000} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={tr("Disponibilités, objectifs, difficultés…")} />
               </Field>
             </div>
             {sendError && <p className="mt-4 rounded-lg bg-destructive/10 p-3 text-sm text-destructive">{sendError}</p>}
             <div className="mt-6 flex justify-between">
-              <Button type="button" variant="ghost" onClick={back}><ArrowLeft className="mr-1 h-4 w-4" />Retour</Button>
-              <Button type="submit" disabled={sending}>{sending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}Envoyer ma demande</Button>
+              <Button type="button" variant="ghost" onClick={back}><ArrowLeft className="mr-1 h-4 w-4" />{tr("Retour")}</Button>
+              <Button type="submit" disabled={sending}>{sending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{tr("Envoyer ma demande")}</Button>
             </div>
           </form>
         )}
@@ -228,11 +233,11 @@ export const GuidedAssistant = () => {
         {step === "done" && (
           <div className="py-6 text-center animate-in fade-in zoom-in-95 duration-300">
             <CheckCircle2 className="mx-auto mb-3 h-12 w-12 text-emerald" />
-            <h3 className="text-2xl">Demande enregistrée</h3>
+            <h3 className="text-2xl">{tr("Demande enregistrée")}</h3>
             <p className="mx-auto mt-2 max-w-md text-muted-foreground">
-              Votre demande a bien été enregistrée sous la référence <span className="font-semibold text-foreground">{reference}</span>. Un conseiller edUloc vous recontactera {form.preferred_channel === "E-mail" ? "par e-mail" : `par ${form.preferred_channel.toLowerCase()}`}{edulocConfig.hours ? ` (${edulocConfig.hours})` : ""}.
+              {t("Votre demande a bien été enregistrée sous la référence", "Your request has been saved under reference")} <span className="font-semibold text-foreground">{reference}</span>. {t("Un conseiller edUloc vous recontactera via", "An edUloc advisor will contact you via")} {tr(form.preferred_channel)}{edulocConfig.hours ? ` (${edulocConfig.hours})` : ""}.
             </p>
-            <Button variant="outline" className="mt-6" onClick={reset}>Nouvelle demande</Button>
+            <Button variant="outline" className="mt-6" onClick={reset}>{tr("Nouvelle demande")}</Button>
           </div>
         )}
       </div>
@@ -240,10 +245,13 @@ export const GuidedAssistant = () => {
   );
 };
 
-const Field = ({ label, error, className, children }: { label: string; error?: string; className?: string; children: React.ReactNode }) => (
+const Field = ({ label, error, className, children }: { label: string; error?: string; className?: string; children: React.ReactNode }) => {
+  const tr = useSupportCopy();
+  return (
   <div className={cn("space-y-1.5", className)}>
-    <Label>{label}</Label>
+    <Label>{tr(label)}</Label>
     {children}
-    {error && <p className="text-xs text-destructive">{error}</p>}
+    {error && <p className="text-xs text-destructive">{tr(error)}</p>}
   </div>
-);
+  );
+};
