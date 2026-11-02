@@ -54,7 +54,7 @@ export const SupportChat = () => {
           <div ref={scroll} className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain p-5" aria-live="polite" role="log">
             <p className="text-center text-xs text-muted-foreground">{tr("Votre espace d’assistance")}</p>
             {messages.map((m, i) => <div key={i} className={m.role === "user" ? "ml-8 rounded-lg rounded-br-none bg-primary p-3 text-sm leading-relaxed text-primary-foreground" : "mr-5 rounded-lg rounded-tl-none bg-muted p-3 text-sm leading-relaxed"}>{m.role === "assistant" ? tr(m.text) : m.text}</div>)}
-            <div className="flex flex-col items-start gap-2">{TOPICS.map((t) => <Button key={t.label} variant="outline" size="sm" onClick={() => answer(t.label)} className="h-auto whitespace-normal py-2 text-left">{tr(t.label)}<ArrowRight /></Button>)}</div>
+            <div className="flex flex-col items-start gap-2">{TOPICS.map((t) => <Button key={t.label} variant="outline" size="sm" onClick={() => answer(tr(t.label))} className="h-auto whitespace-normal py-2 text-left">{tr(t.label)}<ArrowRight /></Button>)}</div>
             <div className="border-t pt-4">
               <Button className="h-auto w-full whitespace-normal py-3" onClick={() => setRequest(true)}><Headphones />{tr("Contacter le service client")}<ArrowRight /></Button>
               <p className="mt-2 text-center text-xs text-muted-foreground">{tr("Laissez une demande pour être recontacté.")}</p>
@@ -70,6 +70,6 @@ export const SupportChat = () => {
         </>}
       </motion.section>}
     </AnimatePresence>
-    <Button ref={launcher} onClick={() => open ? close() : setOpen(true)} aria-expanded={open} aria-label={tr(open ? "Réduire le tchat" : "Ouvrir le tchat d’aide")} className="fixed bottom-5 right-5 z-[60] h-14 gap-3 rounded-full px-5 shadow-soft"><MessageCircle className="!h-5 !w-5" /><span>{tr("Besoin d’aide ?")}</span></Button>
+    <Button ref={launcher} onClick={() => open ? close() : setOpen(true)} aria-expanded={open} aria-label={tr(open ? "Réduire le tchat" : "Ouvrir le tchat d’aide")} className="fixed bottom-5 right-5 z-[60] h-14 w-14 gap-3 rounded-full px-0 shadow-soft sm:w-auto sm:px-5"><MessageCircle className="!h-5 !w-5" /><span className="hidden sm:inline">{tr("Besoin d’aide ?")}</span></Button>
   </>;
 };
