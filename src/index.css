@@ -104,3 +104,6 @@ main a.inline-flex, main button.inline-flex { max-width: 100%; height: auto; min
   .text-glow { background: var(--gradient-glow); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .bg-glow { background: var(--gradient-glow); }
 }
+
+/* Statement: hide forced line breaks on small screens */
+@media (max-width: 820px) { .statement-text .reveal-br { display: none; } }

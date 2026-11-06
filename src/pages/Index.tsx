@@ -1,4 +1,8 @@
-import { useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
+import { LoadReveal, type RevealColors } from "@/components/site/LetterReveal";
+import { Statement } from "@/components/site/Statement";
+import { DotArrow } from "@/components/site/DotArrow";
 import { ArrowRight, BookOpen, Clock, Download, GraduationCap, HeartHandshake, LogIn, Mail, Menu, MessageCircle, Moon, Phone, Search, ShieldCheck, Smartphone, Sun, Users, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -81,8 +85,12 @@ const DownloadButton = ({ variant = "outline", size = "lg" }: { variant?: "outli
   );
 };
 
+const HERO_COLORS: RevealColors = { ghost: "hsl(var(--primary-foreground) / 0.9)", accent: "hsl(var(--emerald))", final: "currentColor", highlight: "hsl(var(--violet))" };
+
 const Hero = () => {
   const t = useT();
+  const { lang } = usePrefs();
+  const tagline = useMemo(() => [[{ text: t("Le bon accompagnement,", "The right support,") }], [{ text: t("au bon ", "in the right ") }, { text: t("endroit.", "place."), hl: true }]], [lang]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <section id="top" className="relative isolate overflow-hidden bg-primary-dark text-primary-foreground dark:text-foreground">
       <img src={heroImage} width={1536} height={1024} fetchPriority="high" alt={t("Une tutrice accompagne un élève dans ses exercices de mathématiques", "A tutor helps a student with maths exercises")} className="hero-photo absolute inset-0 -z-20 h-full w-full object-cover object-right" />
@@ -92,13 +100,13 @@ const Hero = () => {
           <span className="inline-flex items-center gap-2 text-sm font-medium"><BookOpen className="h-4 w-4" />{t("Soutien scolaire · Cours particuliers", "Tutoring · Private lessons")}</span>
           <h1 className="mt-5 text-5xl leading-[1.05] sm:text-6xl lg:text-7xl"><span>edU</span><span className="text-violet">loc</span></h1>
           <p className="mt-4 font-display text-3xl font-bold leading-tight sm:text-4xl">
-            {t("Le bon accompagnement,", "The right support,")}<br />{t("au bon endroit.", "in the right place.")}
+            <LoadReveal key={tagline[0][0].text} lines={tagline} colors={HERO_COLORS} />
           </p>
           <p className="mt-5 max-w-md text-base leading-relaxed opacity-85">
             {t("Décrivez votre besoin, un conseiller edUloc trouve le tuteur qui correspond à votre enfant, à vous ou à un proche. Sans compte, sans installation.", "Describe your need and an edUloc advisor finds the right tutor for your child, yourself or a loved one. No account, no install.")}
           </p>
           <div className="mt-8 flex flex-col items-start gap-3">
-            <Button size="lg" onClick={openHelp} className="h-auto max-w-full whitespace-normal rounded-full bg-emerald py-3 text-left text-destructive-foreground hover:bg-emerald/90"><MessageCircle />{t("Trouver un tuteur avec un conseiller", "Find a tutor with an advisor")}<ArrowRight className="h-4 w-4 shrink-0" /></Button>
+            <Button size="lg" onClick={openHelp} className="group relative h-auto max-w-full whitespace-normal rounded-full bg-primary py-3.5 pl-6 pr-14 text-left text-primary-foreground hover:bg-primary"><MessageCircle />{t("Trouver un tuteur avec un conseiller", "Find a tutor with an advisor")}<DotArrow large /></Button>
             <a href="#application" className="inline-flex items-center gap-2 py-2 text-sm font-medium underline underline-offset-4">{t("Je préfère l'application", "I prefer the app")}<ArrowRight className="h-4 w-4" /></a>
           </div>
           <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-sm opacity-85">
@@ -213,22 +221,41 @@ const Channel = ({ href, icon: Icon, label, sub, external }: { href: string; ico
 
 const AppSection = () => {
   const t = useT();
+  const box = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: box, offset: ["start end", "start start"] });
+  const scale = useTransform(scrollYProgress, [0, 1], reduced ? [1, 1] : [1.12, 1]);
   return (
     <section id="application" className="scroll-mt-16 py-20">
       <div className="container">
-        <ScrollReveal className="relative overflow-hidden rounded-3xl bg-primary-dark p-8 text-primary-foreground sm:p-14">
+        <div ref={box} className="relative grid overflow-hidden rounded-3xl bg-primary-dark text-primary-foreground lg:grid-cols-[58%_42%]">
           <MotionThreads />
-          <div className="relative max-w-xl">
+          <div className="relative p-8 sm:p-14">
             <p className="text-sm font-semibold uppercase tracking-wider text-violet">{t("Application Android", "Android app")}</p>
             <h2 className="mt-2 text-3xl sm:text-4xl">{t("Gérez vos cours en toute autonomie", "Manage your lessons on your own")}</h2>
             <p className="mt-4 opacity-85">{t("Recherchez des tuteurs, consultez leurs disponibilités, réservez et suivez vos cours depuis votre téléphone.", "Search tutors, check availability, book and follow lessons from your phone.")}</p>
             <div className="mt-8"><DownloadButton variant="default" /></div>
             {hasApk() && <p className="mt-3 text-xs opacity-70">{t("Fichier APK pour Android. Autorisez l'installation depuis votre navigateur si demandé.", "APK file for Android. Allow installs from your browser if asked.")}</p>}
           </div>
-        </ScrollReveal>
+          <div className="relative h-72 overflow-hidden lg:h-auto">
+            <motion.img src={adultImage} alt={t("Un adulte suit un cours sur son téléphone", "An adult follows a lesson on a phone")} loading="lazy" style={{ scale }} className="absolute inset-0 h-full w-full origin-[50%_60%] object-cover" />
+          </div>
+        </div>
       </div>
     </section>
   );
+};
+
+const StatementBlock = () => {
+  const t = useT();
+  const { lang } = usePrefs();
+  const lines = useMemo(() => [
+    [{ text: t("Un conseiller ", "An ") }, { text: "edUloc", hl: true }, { text: t("", " advisor") }],
+    [{ text: t("écoute votre besoin, cherche les tuteurs,", "listens to your need, searches tutors,") }],
+    [{ text: t("vérifie leurs disponibilités et organise", "checks their availability and sets up") }],
+    [{ text: t("le premier cours pour vous.", "the first lesson for you.") }],
+  ], [lang]); // eslint-disable-line react-hooks/exhaustive-deps
+  return <Statement key={lang} lines={lines} />;
 };
 
 const Faq = () => {
@@ -278,7 +305,7 @@ const Index = () => {
     <div className="min-h-screen">
       <Header />
       <SectionDots items={dots} />
-      <main><Hero /><HowItWorks /><Help /><Services /><AppSection /><Faq /></main>
+      <main><Hero /><StatementBlock /><HowItWorks /><Help /><Services /><AppSection /><Faq /></main>
       <Footer />
       <SupportChat />
     </div>

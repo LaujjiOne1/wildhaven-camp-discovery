@@ -85,7 +85,10 @@ export default {
       },
       boxShadow: {
         'soft': 'var(--shadow-soft)',
-        
+        'dot': '0 0 10px hsl(var(--emerald) / .7)',
+      },
+      transitionTimingFunction: {
+        'brand': 'cubic-bezier(.22,.7,.2,1)',
       },
       transitionDuration: {
         '400': '400ms',

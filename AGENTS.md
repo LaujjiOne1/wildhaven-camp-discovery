@@ -8,3 +8,4 @@
 - Site authentication uses Cloud Auth and owner-only profiles, separate from Android lesson management. Why: website profiles must not become a second booking system.
 - PrefsProvider owns persistent language/theme preferences, and support translations retain canonical submitted values. Why: switching language must not change stored request semantics.
 - ServicesCarousel provides accessible animated service navigation with reduced-motion support. Why: the uploaded video is a visual reference, not content to embed.
+- Scroll-driven brand effects (BowlGlow canvas, LetterReveal, pinned Statement, DotArrow) read theme tokens only, never hardcoded palettes. Why: reference animations must keep the edUloc charter in both themes.
