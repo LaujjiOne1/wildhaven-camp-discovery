@@ -12,6 +12,7 @@ import { GuidedAssistant } from "@/components/site/GuidedAssistant";
 import { edulocConfig, hasApk, hasDirectChannel, hasEmail, hasPhone, hasWhatsapp, mailLink, telLink, whatsappLink } from "@/config/eduloc";
 import { SupportChat } from "@/components/site/SupportChat";
 import { MotionThreads } from "@/components/site/MotionThreads";
+import { HeroPhotoWall } from "@/components/site/HeroPhotoWall";
 import heroImage from "@/assets/tutoring-hero.jpg";
 import schoolImage from "@/assets/school-support.jpg";
 import adultImage from "@/assets/adult-learning.jpg";
@@ -93,7 +94,7 @@ const Hero = () => {
   const tagline = useMemo(() => [[{ text: t("Le bon accompagnement,", "The right support,") }], [{ text: t("au bon ", "in the right ") }, { text: t("endroit.", "place."), hl: true }]], [lang]); // eslint-disable-line react-hooks/exhaustive-deps
   return (
     <section id="top" className="relative isolate overflow-hidden bg-primary-dark text-primary-foreground dark:text-foreground">
-      <img src={heroImage} width={1536} height={1024} fetchPriority="high" alt={t("Une tutrice accompagne un élève dans ses exercices de mathématiques", "A tutor helps a student with maths exercises")} className="hero-photo absolute inset-0 -z-20 h-full w-full object-cover object-right" />
+      <HeroPhotoWall />
       <div className="hero-shade absolute inset-0 -z-10" />
       <div className="container relative py-14 md:py-20">
         <div className="max-w-xl motion-reveal">

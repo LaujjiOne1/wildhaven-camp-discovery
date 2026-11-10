@@ -83,6 +83,19 @@
 }
 
 .hero-shade { background: var(--hero-shade); }
+.hero-photo-columns { position: absolute; left: 47%; top: -28%; width: 68%; height: 155%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; transform: rotate(-14deg); }
+.hero-photo-column { min-width: 0; }
+.hero-photo-stream { animation: hero-photo-rise 36s linear infinite; }
+.hero-photo-stream-reverse { animation-name: hero-photo-fall; animation-duration: 42s; }
+.hero-photo-set { display: flex; flex-direction: column; gap: 18px; padding-bottom: 18px; }
+.hero-photo-tile { aspect-ratio: 3 / 4; overflow: hidden; border-radius: 8px; border: 1px solid hsl(var(--violet) / .35); box-shadow: var(--shadow-soft); }
+@keyframes hero-photo-rise { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+@keyframes hero-photo-fall { from { transform: translateY(-50%); } to { transform: translateY(0); } }
+@media (max-width: 767px) {
+  .hero-photo-columns { left: 20%; top: -12%; width: 105%; gap: 12px; }
+  .hero-photo-set { gap: 12px; padding-bottom: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .hero-photo-stream { animation: none; } }
 .service-shade { background: var(--service-shade); }
 .service-caption { color: hsl(var(--on-photo)); }
 .container { min-width: 0; }

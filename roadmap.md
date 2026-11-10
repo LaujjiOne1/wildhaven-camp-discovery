@@ -1,4 +1,5 @@
 # Ajouts edUloc
+- [x] Vérifier les colonnes de photos d’accueil inclinées et animées en sens opposés sur ordinateur et téléphone.
 - [x] Ajouter des photos de soutien scolaire et de cours adultes.
 - [x] Ajouter des animations discrètes inspirées des fils du fichier fourni.
 - [x] Ajouter un tchat d’assistance flottant avec réponses guidées et accès aux demandes enregistrées.

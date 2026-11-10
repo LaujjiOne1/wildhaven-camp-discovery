@@ -9,3 +9,4 @@
 - PrefsProvider owns persistent language/theme preferences, and support translations retain canonical submitted values. Why: switching language must not change stored request semantics.
 - ServicesCarousel provides accessible animated service navigation with reduced-motion support. Why: the uploaded video is a visual reference, not content to embed.
 - Scroll-driven brand effects (BowlGlow canvas, LetterReveal, pinned Statement, DotArrow) read theme tokens only, never hardcoded palettes. Why: reference animations must keep the edUloc charter in both themes.
+- HeroPhotoWall reuses tutoring photos in opposing seamless vertical streams with scroll counter-motion and reduced-motion support. Why: the reference is a layout inspiration, not signup content or replacement branding.
